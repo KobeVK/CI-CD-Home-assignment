@@ -17,19 +17,19 @@ pipeline {
 	stages {
 		stage('plan') {
 			steps {
-				withCredentials(string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'))
-				script {
-					if (branch == 'main') {
-						env.ENVIRONMENT = 'production'
-					} else {
-						env.ENVIRONMENT = 'staging'
+				withCredentials([string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID')]) {
+					script {
+						if (branch == 'main') {
+							env.ENVIRONMENT = 'production'
+						} else {
+							env.ENVIRONMENT = 'staging'
+						}
+						sh """
+							echo "Starting Terraform init"
+							terraform init
+							terraform plan -out myplan
+						"""
 					}
-					sh """
-						echo "Starting Terraform init"
-						terraform init
-						terraform plan -out myplan
-					"""
-
 				}
 			}
 		}
