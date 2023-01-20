@@ -1,7 +1,5 @@
 provider "aws" {
   region     = var.aws_region
-  secret_key = ""
-  access_key = "AKIATTJ5JMC2VFMK5PDU"
 }
 
 #Create a new EC2 launch configuration

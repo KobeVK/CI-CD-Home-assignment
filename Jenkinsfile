@@ -17,7 +17,7 @@ pipeline {
 	stages {
 		stage('plan') {
 			steps {
-                withAWS(credentials: 'aws-access-key', region: 'eu-west-3') {
+                withAWS(credentials: 'aws-access-key') {
 					script {
 						if (branch == 'main') {
 							env.ENVIRONMENT = 'production'
