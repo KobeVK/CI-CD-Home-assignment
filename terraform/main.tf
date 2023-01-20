@@ -10,7 +10,7 @@ resource "aws_instance" "ec2_public" {
   instance_type               = var.instance_type
   key_name                    = var.key_name
   security_groups             = var.security_group
-  subnet_id                   = aws_subnet.Public_Subnet_1.id
+  subnet_id                   = var.subnet_id
   tags                        = var.tag_name
   vpc_id                      = var.vpc_id
   cidr_block                  = var.vpc-cidr

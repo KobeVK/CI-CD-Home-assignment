@@ -36,7 +36,7 @@ variable "vpc-cidr" {
   type        = string
 }
 
-variable "Public_Subnet_1" {
+variable "subnet_id" {
   default     = "172.31.0.0/20"
   description = "Public_Subnet_1"
   type        = string
