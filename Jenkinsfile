@@ -16,6 +16,7 @@ pipeline {
 
 	stages {
 		stage('plan') {
+			withCredentials([string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID')
 			steps {
 				script {
 					if (branch == 'main') {
