@@ -17,12 +17,14 @@ variable "instance_type" {
 variable "security_group" {
   description = "Name of security group"
   default     = "launch-wizard-1"
+  type        = list(string)
 }
 
 #paramatized
 variable "tag_name" {
   description = "Tag Name of for Ec2 instance"
   default     = "my-Terraform_ec2-instance"
+  type        =  map(list(string))
 }
 
 variable "ami_id" {
