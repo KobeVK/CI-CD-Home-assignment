@@ -42,7 +42,7 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "vpc_id" {
+variable "cidr_block" {
   default     = "vpc-72e11d1a"
   description = "vpc_id"
   type        = string
