@@ -16,7 +16,7 @@ variable "instance_type" {
 
 variable "security_group" {
   description = "Name of security group"
-  default     = "sec_group"
+  default     = "sg-0fdca7d4d5179465b"
   type = set(string)
 }
 
