@@ -25,6 +25,8 @@ pipeline {
 					}
 					sh """
 						echo "Starting Terraform init"
+						terraform init
+						terraform plan -out myplan
 					"""
 
 				}
@@ -41,7 +43,10 @@ pipeline {
 
 		stage('Deploy') {
 			steps {
-				sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
+				sh """
+					echo "kk"
+				"""
+				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
 			}
 		}
 
