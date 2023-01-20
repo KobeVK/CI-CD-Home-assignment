@@ -23,11 +23,20 @@ pipeline {
 					} else {
 						env.ENVIRONMENT = 'staging'
 					}
-					sh """
-						echo "Starting Terraform init"
-						./terraform init
-						./terraform plan -out myplan
-					"""
+					BUILD_USER_ID = sh (
+						script: 'whoami',
+						returnStdout: true
+					).trim()
+					GROUP_FOR_USER = sh (
+						script: 'whoami',
+						returnStdout: true
+					).trim()
+					echo "bUILD USER: ${GROUP_FOR_USER }"
+					// sh """
+					// 	echo "Starting Terraform init"
+					// 	./terraform init
+					// 	./terraform plan -out myplan
+					// """
 
 				}
 			}
