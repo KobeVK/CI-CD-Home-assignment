@@ -24,7 +24,7 @@ pipeline {
 						env.ENVIRONMENT = 'staging'
 					}
 					BUILD_USER_ID = sh (
-						script: 'id -u',
+						script: 'whoami',
 						returnStdout: true
 					).trim()
 					echo "bUILD USER: ${BUILD_USER_ID }"
