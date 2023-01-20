@@ -12,7 +12,6 @@ resource "aws_instance" "ec2_public" {
   security_groups             = var.security_group
   subnet_id                   = var.subnet_id
   tags                        = var.tag_name
-  cidr_block                  = var.vpc-cidr
   associate_public_ip_address = true
   lifecycle {
     create_before_destroy = true

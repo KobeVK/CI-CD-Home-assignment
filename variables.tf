@@ -41,9 +41,3 @@ variable "subnet_id" {
   description = "Public_Subnet_1"
   type        = string
 }
-
-variable "cidr_block" {
-  default     = "vpc-72e11d1a"
-  description = "vpc_id"
-  type        = string
-}
