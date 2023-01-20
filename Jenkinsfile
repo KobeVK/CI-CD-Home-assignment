@@ -25,8 +25,8 @@ pipeline {
 					}
 					sh """
 						echo "Starting Terraform init"
-						terraform init
-						terraform plan -out myplan
+						./terraform init
+						./terraform plan -out myplan
 					"""
 
 				}
