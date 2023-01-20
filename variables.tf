@@ -14,12 +14,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "security_group" {
-  description = "Name of security group"
-  default     = "sg-0fdca7d4d5179465b"
-  type = set(string)
-}
-
 #paramatized
 variable "tag_name" {
   description = "Tag Name of for Ec2 instance"
