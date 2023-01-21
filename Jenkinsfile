@@ -109,7 +109,7 @@ pipeline {
 				//
 				// sh """
 				//	 foo=$(git show -s --pretty=%an)
-				//	docker commit -m "building web-app" -a "Author" container_name new_image:v1
+				//	docker commit -m "building web-app" versatile versatile_web_app:v1
 				//"""
 				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
 			}

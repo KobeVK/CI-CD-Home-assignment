@@ -1,13 +1,13 @@
 ---
  
-    - hosts: 35.180.119.202
+    - hosts: all
       gather_facts: no
       user: ubuntu
       connection: "ssh"
       become: true
 
     - name: Install and configure Docker
-      hosts: 35.180.119.202
+      hosts: all
       become: true
       tasks:
         - name: Update apt package lists
