@@ -7,6 +7,7 @@ pipeline {
 	environment {
       branch = "${env.GIT_BRANCH}"
       evni = "${env.ENVIRONMENT}"
+	  GIT_SSH_COMMAND = "ssh -o StrictHostKeyChecking=no"
 	}
 
 	options {
@@ -69,6 +70,7 @@ pipeline {
 							""", returnStdout: true
 						).trim()
 						println "the machine terraform created is  = " + IP
+						println "the workspace you're on is  = " + ${WORKSPACE}
 						sh """
 							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
 							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
