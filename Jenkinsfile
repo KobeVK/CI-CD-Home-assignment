@@ -65,10 +65,12 @@ pipeline {
 							terraform output -raw web_app_access_ip
 						""", returnStdout: true
 					).trim()
-				println "the machine terraform created is  = " + IP
-				sed 's/.*ssh-rsa/${IP} ssh-rsa/' ~/.ssh/known_hosts
-				echo -e "${IP}\n" >> /etc/ansible/hosts
-				ansible ${IP} -m ping
+					sh """
+						println "the machine terraform created is  = " + IP
+						sed 's/.*ssh-rsa/${IP} ssh-rsa/' ~/.ssh/known_hosts
+						echo -e "${IP}\n" >> /etc/ansible/hosts
+						ansible ${IP} -m ping
+					"""
 				}
 			}
 		}

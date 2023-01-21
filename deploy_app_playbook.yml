@@ -60,11 +60,16 @@
             name: ubuntu
             group: docker
             state: present
-            
+
+        - name: Creates directory
+          file:
+            path: /home/ubuntu/Versatile
+            state: directory  
+
         - name: Copy necessary files
           copy:
             src: "{{ item }}"
-            dest: /path/to/destination
+            dest: /home/ubuntu/Versatile
             mode: 0644
           with_items:
             - Dockerfile
