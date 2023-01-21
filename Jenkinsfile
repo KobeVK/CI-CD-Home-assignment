@@ -21,6 +21,7 @@ pipeline {
             steps {
                 script {
                     deleteDir()
+					cleanWs()
                     checkout scm
                 }
             }
