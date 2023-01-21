@@ -58,9 +58,10 @@ pipeline {
 		}
 
 		//replace ansible -m ping with ansible-playbook
-		withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
-			stage('install') {	
-				steps {
+		
+		stage('install') {	
+			steps {
+				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
 					script{
 						IP = sh (
 							script: """
