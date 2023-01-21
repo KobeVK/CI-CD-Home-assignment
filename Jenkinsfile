@@ -35,7 +35,7 @@ pipeline {
 			}
 		}
 
-		stage('prepare') {
+		stage('deploy') {
 			steps {
                 withAWS(credentials: 'aws-access-key') {
 					script {
@@ -56,21 +56,24 @@ pipeline {
 				}
 			}
 		}
-//using 
-		stage('Build') {	
-			steps {
-				script{
-					IP = sh (
-						script: """
-							terraform output -raw web_app_access_ip
-						""", returnStdout: true
-					).trim()
-					println "the machine terraform created is  = " + IP
-					sh """
-						sudo sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts
-						sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
-						ansible ${IP} -m ping
-					"""
+
+		//replace ansible -m ping with ansible-playbook
+		withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
+			stage('install') {	
+				steps {
+					script{
+						IP = sh (
+							script: """
+								terraform output -raw web_app_access_ip
+							""", returnStdout: true
+						).trim()
+						println "the machine terraform created is  = " + IP
+						sh """
+							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
+							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
+							ansible ${IP} -m ping --private-key=$KEY
+						"""
+					}
 				}
 			}
 		}
@@ -78,12 +81,12 @@ pipeline {
 		stage('verify') {	
 			steps {
 				sh """
-					echo "Hello, World!"
+					echo "Verifying site is up............."
 				"""
 			}
 		}
 
-		stage('push image') {
+		stage('build and tag') {
 			steps {
 				sh """
 					echo "kk"
@@ -92,14 +95,14 @@ pipeline {
 			}
 		}
 
-		// stage('destroy image') {
-		// 	steps {
-		// 		sh """
-		// 			echo "kk"
-		// 		"""
-		// 		// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
-		// 	}
-		// }
+		stage('destroy image') {
+			steps {
+				sh """
+					echo "destroying inventory"
+				"""
+				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
+			}
+		}
 
 	}
 }
