@@ -67,7 +67,7 @@ pipeline {
 					).trim()
 					println "the machine terraform created is  = " + IP
 					sh """
-						sed 's/.*ssh-rsa/${IP} ssh-rsa/' ~/.ssh/known_hosts
+						sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts
 						echo -e "${IP}\n" >> /etc/ansible/hosts
 						ansible ${IP} -m ping
 					"""
