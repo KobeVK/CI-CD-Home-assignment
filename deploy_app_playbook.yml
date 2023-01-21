@@ -1,6 +1,6 @@
 ---
  
-    - hosts: asdf
+    - hosts: all
       gather_facts: no
       user: ubuntu
       connection: "ssh"
