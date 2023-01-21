@@ -67,7 +67,8 @@ pipeline {
 					).trim()
 					println "the machine terraform created is  = " + IP
 					sh """
-						sudo sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts
+						usermod -a -G root jenkins
+						sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts
 						echo -e "${IP}\n" >> /etc/ansible/hosts
 						ansible ${IP} -m ping
 					"""
@@ -91,6 +92,15 @@ pipeline {
 				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
 			}
 		}
+
+		// stage('destroy image') {
+		// 	steps {
+		// 		sh """
+		// 			echo "kk"
+		// 		"""
+		// 		// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
+		// 	}
+		// }
 
 	}
 }
