@@ -40,10 +40,10 @@ pipeline {
                 withAWS(credentials: 'aws-access-key') {
 					script {
 						if (branch == 'main') {
-							terraform workspace select prod
+							// terraform workspace select prod
 							env.ENVIRONMENT = 'production'
 						} else {
-							terraform workspace select dev
+							// terraform workspace select dev
 							env.ENVIRONMENT = 'staging'	
 						}
 						sh """
