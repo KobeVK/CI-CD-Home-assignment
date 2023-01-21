@@ -84,7 +84,7 @@
         
         - name: create virtualenv
           become: true
-          command:  apt install python3-virtualenv
+          command: apt install -y python3-virtualenv
 
         - name: create django
           command: pip install django
