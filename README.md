@@ -25,3 +25,9 @@ As part of this Home assignment, I was required to create a web-app that returns
 # Artifacts
 
 # Future work
+1. enable terraform variables to choose from a drop down list, just to not always use the free tier
+2. enable terraform variables to choose from a drop down list, just to not always use the free tier
+3. enable terraform variables to choose from a drop down list, just to not always use the free tier
+4. enable terraform variables to choose from a drop down list, just to not always use the free tier
+
+

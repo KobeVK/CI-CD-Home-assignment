@@ -94,7 +94,7 @@ pipeline {
 						println "the machine terraform created is  = " + IP
 						sh """
 							sed -i 's/hosts: all/hosts: ${IP}/' deploy_app_playbook.yml
-							ansible-playbook -i ${IP} deploy_app_playbook.yml --private-key=****
+							ansible-playbook deploy_app_playbook.yml
 							echo "your deployed web-app can be access here -> http://${IP}:8000"
 						"""
 					}
