@@ -52,9 +52,8 @@ pipeline {
 							terraform plan -out myplan
 							terraform apply -auto-approve
 						"""
-						_IP = sh(
-                        script: "terraform output -raw public_ip",
-                        returnStdout: true,
+						_IP = sh(script: "terraform output -raw public_ip", returnStdout: true)
+						sh """ echo "${_IP}"
 					}
 				}
 			}
