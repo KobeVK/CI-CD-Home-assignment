@@ -54,6 +54,7 @@
             packages:
               - containerd.io
               - docker-compose-plugin
+              - docker-compose
 
         - name: Add user to the docker group
           user:
@@ -78,5 +79,16 @@
             - entrypoint.sh
             - app/
 
-        - name: Start the Docker Compose service
-          shell: docker-compose up
+        - name: create install python3-pip
+          command: apt install -y python3-pip
+        
+        - name: create virtualenv
+          become: true
+          command:  apt install python3-virtualenv
+
+        - name: create django
+          command: pip install django
+
+        - name: docker-compose up
+          command: chdir=/home/ubuntu/Versatile/ docker-compose up
+
