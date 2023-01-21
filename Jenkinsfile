@@ -95,6 +95,7 @@ pipeline {
 							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
 							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
 							ansible-playbook -i ${IP} deploy_app_playbook.yml --private-key=$KEY
+							echo "your deployed web-app can be access here -> http://${IP}:8000"
 						"""
 					}
 				}
