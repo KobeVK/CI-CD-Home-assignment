@@ -67,8 +67,8 @@ pipeline {
 							terraform output -raw public_ip
 						""", returnStdout: true
 					).trim()
-				echo ${IP}
 				}
+				println "the machine terraform created is  = " + IP
 			}
 		}
 
