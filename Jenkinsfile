@@ -52,8 +52,6 @@ pipeline {
 							terraform plan -out myplan
 							terraform apply -auto-approve
 						"""
-						IP = sh(script: "terraform output -raw public_ip", returnStdout:true).trim()
-						sh """ echo "${IP}" """
 					}
 				}
 			}
@@ -69,6 +67,9 @@ pipeline {
 					).trim()
 				}
 				println "the machine terraform created is  = " + IP
+				sed 's/.*ssh-rsa/${IP} ssh-rsa/' ~/.ssh/known_hosts
+				echo -e "${IP}\n" >> /etc/ansible/hosts
+				ansible ${IP} -m ping
 			}
 		}
 
