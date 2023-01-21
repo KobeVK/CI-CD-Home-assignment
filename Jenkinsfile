@@ -15,27 +15,54 @@ pipeline {
 	}
 
 	stages {
+
+		stage('starting-fresh') {
+            steps {
+                script {
+                    deleteDir()
+                    checkout scm
+                }
+            }
+        }
+
+		stage('Properties Set-up') {
+			steps {
+				script {
+					properties([
+						disableConcurrentBuilds()
+					])
+				}
+			}
+		}
+
 		stage('prepare') {
 			steps {
                 withAWS(credentials: 'aws-access-key') {
 					script {
-						// if (branch == 'main') {
-						// 	env.ENVIRONMENT = 'production'
-						// } else {
-						// 	env.ENVIRONMENT = 'staging'	
-						// }
+						if (branch == 'main') {
+							echo -e "----------------------------------- PROVISION PROD INFRASTRUCTURE --------------------------------------"
+							terraform workspace select prod
+							env.ENVIRONMENT = 'production'
+						} else {
+							echo -e "----------------------------------- PROVISION DEV INFRASTRUCTURE --------------------------------------"
+							terraform workspace select dev
+							env.ENVIRONMENT = 'staging'	
+						}
 						sh """
 							echo "Starting Terraform init"
 							terraform init
 							terraform plan -out myplan
 							terraform apply -auto-approve
 						"""
+						_IP = sh(
+                        script: "terraform output -raw public_ip",
+                        returnStdout: true,
 					}
 				}
 			}
 		}
 
-		stage('Test') {	
+		stage('build and push') {	
 			steps {
 				sh """
 					echo "Hello, World!"
