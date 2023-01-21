@@ -1,185 +1,77 @@
 ---
  
-    - hosts: 35.180.98.141
+    - hosts: 13.39.51.220
       gather_facts: no
       user: ubuntu
       connection: "ssh"
       become: true
+
+    - name: Install and configure Docker
+      hosts: all
+      become: true
       tasks:
+        - name: Update apt package lists
+          apt:
+            update_cache: true
 
-      - name: Install docker packages
-        remote_user: ubuntu
-        apt:
-          name: "{{ item }}"
-          state: present
-        with_items:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-        tags:
-          - docker
-          
-      # - name: Add Docker s official GPG key
-      #   remote_user: ubuntu
-      #   apt_key:
-      #     url: https://download.docker.com/linux/ubuntu/gpg
-      #     state: present
-      #   tags:
-      #     - docker
-              
-      # - name: Verify that we have the key with the fingerprint
-      #   remote_user: ubuntu
-      #   apt_key:
-      #     id: 0EBFCD88
-      #     state: present
-      #   tags:
-      #     - docker
+        - name: Install dependencies
+          apt:
+            name: "{{ packages }}"
+            state: present
+          vars:
+            packages:
+              - apt-transport-https
+              - ca-certificates
+              - curl
+              - software-properties-common
 
-      # - name: Set up the stable repository
-      #   remote_user: ubuntu
-      #   apt_repository:
-      #     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
-      #     state: present
-      #     update_cache: yes
-      #   tags:
-      #     - docker
+        - name: Add Docker's official GPG key
+          apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
 
-      # - name: Update apt packages
-      #   remote_user: ubuntu
-      #   apt:
-      #     update_cache: yes
-      #   tags:
-      #     - docker
+        - name: Add Docker's apt repository
+          apt_repository:
+            repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+            state: present
 
-      # - name: Install docker
-      #   remote_user: ubuntu
-      #   apt:
-      #     name: docker-ce
-      #     state: present
-      #     update_cache: yes
-      #   #notify: Start docker on boot
-      #   tags:
-      #     - docker
-          
-      # - name: Install docker-compose
-      #   remote_user: ubuntu
-      #   get_url: 
-      #     url : https://github.com/docker/compose/releases/download/1.25.1-rc1/docker-compose-Linux-x86_64
-      #     dest: /usr/local/bin/docker-compose
-      #     mode: 'u+x,g+x'
+        - name: Install Docker CE
+          apt:
+            name: docker-ce
+            state: present
 
-      # - name: Add remote "ubuntu" user to "docker" group
-      #   remote_user: ubuntu
-      #   user:
-      #     name: "ubuntu"
-      #     group: "docker"
-      #     append: yes
-      #   tags:
-      #     - docker
+        - name: Install Python3.9
+          apt:
+            name: python3.9
+            state: present
 
-      # - name: Check that the /usr/local/bin/python3.6 exists
-      #   stat:
-      #     path: /usr/local/bin/python3.6
-      #   tags: python
-      #   register: python_result
-      
-      # - name: Update apt-cache
-      #   apt: update_cache=yes
-      #   tags: packages, python
-      #   when: python_result.stat.exists == False
 
-      # - name: install essentials
-      #   command: sudo apt-get install -y build-essential libsqlite3-dev sqlite3 bzip2 libbz2-dev zlib1g-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev
-      #   ignore_errors: yes
+        - name: Install containerd.io and the Docker Compose plugin
+          apt:
+            name: "{{ packages }}"
+            state: present
+          vars:
+            packages:
+              - containerd.io
+              - docker-compose-plugin
 
-      # - name: Install packages needed for installing Python
-      #   apt: pkg={{ item }}
-      #   with_items:
-      #     - wget
-      #     - xz-utils
-      #     - build-essential
-      #     - libsqlite3-dev
-      #     - libreadline-dev
-      #     - libssl-dev
-      #     - openssl
-      #   tags: packages, python
-      #   when: python_result.stat.exists == False
+        - name: Add user to the docker group
+          user:
+            name: ubuntu
+            group: docker
+            state: present
+            
+        - name: Copy necessary files
+          copy:
+            src: "{{ item }}"
+            dest: /path/to/destination
+            mode: 0644
+          with_items:
+            - Dockerfile
+            - docker-compose.yml
+            - requirements.txt
+            - entrypoint.sh
+            - app/
 
-      # - name: Extract python 3.6.4 into /tmp
-      #   unarchive:
-      #     src: https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tar.xz
-      #     dest: /tmp/
-      #     remote_src: yes
-      #   tags: packages, python
-
-      # - name: Configure python 3.6.4
-      #   shell: ./configure chdir=/tmp/Python-3.6.4
-      #   tags: packages, python
-      #   when: python_result.stat.exists == False
-
-      # - name: Make
-      #   shell: make chdir=/tmp/Python-3.6.4
-      #   tags: packages, python
-      #   when: python_result.stat.exists == False
-
-      # - name: Install Python 3.6.4
-      #   shell: make install chdir=/tmp/Python-3.6.4
-      #   become: yes
-      #   become_user: root
-      #   tags: packages, python
-      #   when: python_result.stat.exists == False
-
-      # - name: Remove tmp files used for Python 3.6.4 installation
-      #   file: path={{ item }} state=absent
-      #   with_items:
-      #     - /tmp/Python.tar.xz
-      #     - /tmp/Python-3.6.4
-      #   tags: packages, python
-      #   when: python_result.stat.exists == False
-        
-      # - name: install pip
-      #   command: sudo apt install python3-pip
-      #   ignore_errors: yes
-
-      # - name: Installing python library for the Docker Remote API
-      #   pip:
-      #     name: docker-py
-
-      # - name: Start service docker
-      #   service:
-      #     name: docker
-      #     state: started
-      #     enabled: yes
-      #   become: yes
-
-      # - name: Start the Docker daemon
-      #   service:
-      #     name: docker
-      #     state: started
-
-      # - name: Copy Html Code to Controller Node
-      #   copy:
-      #     src: ./webPage/
-      #     dest: /home/Web/
-
-      # - name: Copy file with owner and permission, using symbolic representation
-      #   copy:
-      #     src: app/
-      #     dest: app
-      #     owner: ubuntu
-      #     group: ubuntu
-      #     mode: a+x
-
-      # - name: Create a web container
-      #   docker_container:
-      #     name: web
-      #     image: httpd
-      #     ports:
-      #       - "80:80"
-      #     volumes:
-      #       - /home/Web:/usr/local/apache2/htdocs/
-      #   register: status
-
-      # - debug:
-      #     var: status
+        - name: Start the Docker Compose service
+          shell: docker-compose up
