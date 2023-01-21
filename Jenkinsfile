@@ -56,7 +56,7 @@ pipeline {
 				}
 			}
 		}
-
+//using 
 		stage('Build') {	
 			steps {
 				script{
@@ -68,7 +68,7 @@ pipeline {
 					println "the machine terraform created is  = " + IP
 					sh """
 						sudo sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts
-						sudo -- sh -c "echo -e "${IP}\n" >> /home/ubuntu/Versatile/hosts"
+						sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
 						ansible ${IP} -m ping
 					"""
 				}
