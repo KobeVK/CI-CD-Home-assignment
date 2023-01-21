@@ -15,19 +15,20 @@ pipeline {
 	}
 
 	stages {
-		stage('plan') {
+		stage('prepare') {
 			steps {
                 withAWS(credentials: 'aws-access-key') {
 					script {
 						// if (branch == 'main') {
 						// 	env.ENVIRONMENT = 'production'
 						// } else {
-						// 	env.ENVIRONMENT = 'staging'
+						// 	env.ENVIRONMENT = 'staging'	
 						// }
 						sh """
 							echo "Starting Terraform init"
 							terraform init
 							terraform plan -out myplan
+							terraform apply
 						"""
 					}
 				}
