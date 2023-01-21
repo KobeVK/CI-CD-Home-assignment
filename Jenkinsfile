@@ -19,11 +19,11 @@ pipeline {
 			steps {
                 withAWS(credentials: 'aws-access-key') {
 					script {
-						if (branch == 'main') {
-							env.ENVIRONMENT = 'production'
-						} else {
-							env.ENVIRONMENT = 'staging'
-						}
+						// if (branch == 'main') {
+						// 	env.ENVIRONMENT = 'production'
+						// } else {
+						// 	env.ENVIRONMENT = 'staging'
+						// }
 						sh """
 							echo "Starting Terraform init"
 							terraform init
