@@ -1,6 +1,6 @@
 ---
  
-    - hosts: 13.39.51.220
+    - hosts: all
       gather_facts: no
       user: ubuntu
       connection: "ssh"

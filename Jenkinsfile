@@ -58,9 +58,8 @@ pipeline {
 			}
 		}
 
-		//replace ansible -m ping with ansible-playbook
 		
-		stage('install') {	
+		stage('Verify') {	
 			steps {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
 					script{
@@ -80,14 +79,28 @@ pipeline {
 				}
 			}
 		}
-
-		stage('verify') {	
+		
+		stage('install') {	
 			steps {
-				sh """
-					echo "Verifying site is up............."
-				"""
+				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
+					script{
+						IP = sh (
+							script: """
+								terraform output -raw web_app_access_ip
+							""", returnStdout: true
+						).trim()
+						println "the machine terraform created is  = " + IP
+						println "the workspace you're on is  = ${WORKSPACE}"  
+						sh """
+							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
+							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
+							ansible-playbook -i ${IP} deploy_app_playbook.yml --private-key=$KEY
+						"""
+					}
+				}
 			}
 		}
+
 
 		stage('build and tag') {
 			steps {
