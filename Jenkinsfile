@@ -89,9 +89,12 @@ pipeline {
 
 		stage('build and tag') {
 			steps {
-				sh """
-					echo "kk"
-				"""
+				echo "hi"
+				//
+				// sh """
+				//	foo=$(git show -s --pretty=%an)
+				//	docker commit -m "building web-app" -a "Author" container_name new_image:v1
+				//"""
 				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
 			}
 		}
