@@ -64,7 +64,7 @@ pipeline {
 				script{
 					IP = sh (
 						script: """
-							terraform output -raw public_ip
+							terraform output -raw web_app_access_ip
 						""", returnStdout: true
 					).trim()
 				}
