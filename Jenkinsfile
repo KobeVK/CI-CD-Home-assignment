@@ -73,6 +73,7 @@ pipeline {
 						sh """
 							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
 							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
+							sleep 60 
 							ansible ${IP} -m ping --private-key=$KEY
 						"""
 					}
@@ -90,11 +91,9 @@ pipeline {
 							""", returnStdout: true
 						).trim()
 						println "the machine terraform created is  = " + IP
-						println "the workspace you're on is  = ${WORKSPACE}"  
 						sh """
-							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
-							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
-							ansible-playbook -i ${IP} deploy_app_playbook.yml --private-key=$KEY
+							sed -i 's/hosts: all/hosts: ${IP}/' deploy_app_playbook.yml
+							ansible-playbook -i ${IP} deploy_app_playbook.yml --private-key=****
 							echo "your deployed web-app can be access here -> http://${IP}:8000"
 						"""
 					}

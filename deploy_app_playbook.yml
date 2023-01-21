@@ -1,13 +1,13 @@
 ---
  
-    - hosts: all
+    - hosts: asdf
       gather_facts: no
       user: ubuntu
       connection: "ssh"
       become: true
 
     - name: Install and configure Docker
-      hosts: all
+      hosts: asdf
       become: true
       tasks:
         - name: Update apt package lists
