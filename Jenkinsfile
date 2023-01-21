@@ -28,7 +28,7 @@ pipeline {
 							echo "Starting Terraform init"
 							terraform init
 							terraform plan -out myplan
-							terraform apply
+							terraform apply -auto-approve
 						"""
 					}
 				}
