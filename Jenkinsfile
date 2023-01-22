@@ -114,7 +114,7 @@ pipeline {
 						playbook: 'release_docker_playbook.yml',
 						extraVars: [
 							usr: "${USERNAME}",
-							pass: "${PASSWORD}"
+							pass: "${PASSWORD}",
 							buildNumber: "${buildNumber}"
 							// script{
 							// 	sh """
