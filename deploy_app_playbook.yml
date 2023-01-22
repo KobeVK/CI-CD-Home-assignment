@@ -90,8 +90,7 @@
           command: pip install django
         
         - name: Changing directory
-          become: true
-          command: cd /home/ubuntu/Versatile
+          chdir: /home/ubuntu/Versatile
 
         - name: docker-compose up
           command: docker-compose up

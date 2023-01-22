@@ -28,22 +28,35 @@ This was done by using GIT to manage my Terraform code. It allows me to track ch
 
 <br>
 Versatile web app  CICD flow involves the following stages: <br>
-1. Deploy <br>
+
+1. `Deploy` <br>
 In this stage, we deploy an EC2 instance to aws, using terraform aws module<br>
 <br>
 
-2. verify
+2. `verify`
 In this stage, we verify that the EC2 instance was created succesfully 
 
-3. Install <br>
+3. `Install` <br>
 In this stage, we install our web application on top of the EC2 using ansible whcih runs docker-compose to initiate a docker container that holds our web app <br>
 
-4. Test <br>
-In this stage,
-5. 
-6. 
+4. `Test` <br>
+In this stage, we test the functionality of the web-app <br>
+such as: <br>
+    4.1 Health Checks
+    4.2 Health Checks
+    4.3 Health Checks
+
+5. `Release` <br>
+In this stage, we release the image as artifact to dockerhub. <br>
+This image containes the latest of our code
+
+6. `Destroy`
+On development pipelines only (pipelines that came from any other branch but `main`)
+it will kill the EC2 machine that was created during the pipeline
 
 # Deployment
+## Development deployment: <br>
+
 
 # The tests
 
