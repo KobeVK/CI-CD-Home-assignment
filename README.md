@@ -28,7 +28,7 @@ As part of this Home assignment, I was required to create a web-app that returns
 1. enable terraform variables to choose from a drop down list, just to not always use the free tier
 2. make production web-app always on and re-deploy with flag
 3. fix folder structure to better visibility (ansible files, TF files, Docker files)
-
+4. add proxy such as NginX
 
 
 
