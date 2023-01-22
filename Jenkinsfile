@@ -112,12 +112,24 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					script{
 						sh """
-							docker login  -u ${USERNAME} -p ${PASSWORD}
-							docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-							docker tag versatile_app sapkobisap/versatile:${buildNumber}
-							docker push sapkobisap/versatile:${buildNumber}
+							sed -i 's/hosts: all/hosts: ${env.IP}/' release_docker_playbook.yml > /dev/null 1>&2	
 						"""
 					}
+					ansiblePlaybook(
+						playbook: 'release_docker_playbook.yml',
+						extraVars: [
+							usr: "${USERNAME}",
+							pass: "${PASSWORD}",
+							buildNumber: "${buildNumber}"
+							// script{
+							// 	sh """
+							// 		docker login  -u ${USERNAME} -p ${PASSWORD}
+							// 		docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+							// 		docker tag versatile_app sapkobisap/versatile:${buildNumber}
+							// 		docker push sapkobisap/versatile:${buildNumber}
+							// 	"""
+						]
+					)
 				}
 			}
 		}
@@ -150,7 +162,8 @@ def deployENV() {
 def destroyENV() {
 	def buildNumber = env.BUILD_NUMBER
 	sh """
+		sleep 600
 		echo "Starting Terraform destroy"
-		terraform destory -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
 	"""
 }
