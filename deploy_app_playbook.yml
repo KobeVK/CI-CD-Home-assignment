@@ -89,8 +89,9 @@
         - name: create django
           command: pip install django
       
-        - name: docker-compose up
-          command: docker-compose up
-          args:
-            chdir: /home/ubuntu/Versatile
-
+        # - name: docker-compose up
+        #   command: docker-compose up
+        #   args:
+        #     chdir: /home/ubuntu/Versatile
+        - name: Go to the folder and execute command
+          command: chdir=/home/ubuntu/Versatile docker-compose up
