@@ -162,7 +162,8 @@ def deployENV() {
 def destroyENV() {
 	def buildNumber = env.BUILD_NUMBER
 	sh """
+		sleep 600
 		echo "Starting Terraform destroy"
-		terraform destory -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
 	"""
 }
