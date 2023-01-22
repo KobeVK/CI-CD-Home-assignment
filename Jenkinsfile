@@ -55,12 +55,11 @@ pipeline {
 						} else {
 							// terraform workspace select dev
 							env.ENVIRONMENT = 'staging'	
-						}
+						}//maybe add here terraform lock
 						sh """
 							echo "Starting Terraform init"
 							terraform init
 							terraform plan -out myplan
-							terraform state lock
 							terraform apply -auto-approve
 						"""
 					}
@@ -136,10 +135,9 @@ pipeline {
 				when {
 					expression {
 						env.ENVIRONMENT = 'staging'
-					}
+					}//maybe add here terraform unlock
 				sh """
 					terraform apply -destroy
-					terraform state unlock
 				"""
 				}
 			}
