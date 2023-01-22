@@ -74,7 +74,7 @@
             mode: 0644
           with_items:
             - app/app/
-            - app/hello-world/
+            - app/hello_world
             - app/db.sqlite3
             - app/manage.py
         
