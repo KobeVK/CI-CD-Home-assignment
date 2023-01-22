@@ -115,7 +115,7 @@ pipeline {
 
 		stage('Release') {
 			steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					def buildNumber = env.BUILD_NUMBER
 					sh """
 						docker login  -u ${USERNAME} -p ${PASSWORD}
