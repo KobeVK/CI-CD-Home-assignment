@@ -73,10 +73,10 @@
             dest: /home/ubuntu/Versatile/app
             mode: 0644
           with_items:
-            - app/
-            - hello-world/
-            - db.sqlite3
-            - manage.py
+            - app/app/
+            - app/hello-world/
+            - app/db.sqlite3
+            - app/manage.py
         
         - name: Copy necessary files2
           copy:
