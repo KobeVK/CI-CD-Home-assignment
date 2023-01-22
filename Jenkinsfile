@@ -1,7 +1,7 @@
 #!groovy
 
 def ENVIRONMENT = ""
-def buildNumber = env.BUILD_NUMBER
+def buildNumber = env.BUILD_NUMBER as int
 
 pipeline {
 	agent any
@@ -29,7 +29,6 @@ pipeline {
                     checkout scm
 					// abort a running Pipeline build if a new one is started
                     // https://support.cloudbees.com/hc/en-us/articles/360034881371-How-can-I-abort-a-running-Pipeline-build-if-a-new-one-is-started-
-                    def buildNumber = env.BUILD_NUMBER as int
                     if (buildNumber > 1) milestone(buildNumber - 1)
                     milestone(buildNumber)
                 }
