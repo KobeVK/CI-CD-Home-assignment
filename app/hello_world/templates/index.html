@@ -6,6 +6,6 @@
   <body>
     <h1 align="center">Hello, {{ name }}!</h1>
     <p></p>
-    <p style="text-align:center;">This is a __{{ env }}__ deployment,  version __{{ ver }}__</p>
+    <p style="text-align:center;">This is a "${env.ENVIRONMENT}" deployment,  version "${env.BUILD_NUMBER}"</p>
   </body>
 </html>
