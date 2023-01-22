@@ -1,5 +1,8 @@
+
+variable "environment" {}
+variable "id" {}
 variable "aws_region" {
-    default = "eu-west-3"
+  default = "eu-west-3"
 }
 
 provider "aws" {
