@@ -17,7 +17,6 @@ pipeline {
 
 	options {
 		timestamps()
-		// lock(evni)
 	}
 
 	stages {
@@ -136,21 +135,17 @@ pipeline {
 }
 
 def deployENV() {
-    {
-        sh """
-			echo "Starting Terraform init"
-			terraform init
-			terraform plan -out myplan -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
-			terraform apply -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
-        """
-    }
+	sh """
+		echo "Starting Terraform init"
+		terraform init
+		terraform plan -out myplan -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform apply -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
+	"""
 }
 
 def destroyENV() {
-    {
         sh """
 			echo "Starting Terraform destroy"
 			terraform destory -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
         """
-    }
 }
