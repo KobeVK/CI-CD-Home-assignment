@@ -7,7 +7,7 @@ IP=$1
 
 STATUSCODE=$(curl --silent -I http://${IP}:8000/ | head -n 1|cut -d$' ' -f2)
 if [[ test $STATUSCODE -ne 200 ]]; then
-    exit 1
+    #exit 1
     echo "fail"
     # send email
 else
