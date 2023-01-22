@@ -3,6 +3,9 @@
 
 pipeline {
 	agent any
+	parameters {
+		string(name: 'IP', defaultValue: '')
+	}
 
 	environment {
       branch = "${env.GIT_BRANCH}"
@@ -69,18 +72,18 @@ pipeline {
 			steps {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
 					script{
-						IP = sh (
+						access_ip = sh (
 							script: """
 								terraform output -raw web_app_access_ip
 							""", returnStdout: true
 						).trim()
-						println "the machine terraform created is  = " + IP
-						println "the workspace you're on is  = ${WORKSPACE}"  
+						env.IP = access_ip
+						println "the machine terraform created is  = " + access_ip
 						sh """
-							sudo -- sh -c "sed 's/.*ssh-rsa/${IP} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
-							sudo -- sh -c "echo ${IP} | sudo tee -a /home/ubuntu/Versatile/hosts"
+							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
+							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts"
 							sleep 60 
-							ansible ${IP} -m ping --private-key=$KEY
+							ansible ${access_ip} -m ping --private-key=$KEY
 						"""
 					}
 				}
@@ -91,16 +94,10 @@ pipeline {
 			steps {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
 					script{
-						IP = sh (
-							script: """
-								terraform output -raw web_app_access_ip
-							""", returnStdout: true
-						).trim()
-						println "the machine terraform created is  = " + IP
 						sh """
-							sed -i 's/hosts: all/hosts: ${IP}/' deploy_app_playbook.yml
+							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml
 							ansible-playbook deploy_app_playbook.yml
-							echo "your deployed web-app can be access here -> http://${IP}:8000"
+							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
 						"""
 					}
 				}
@@ -110,7 +107,9 @@ pipeline {
 		stage('test') {
 			steps {
 				script{
-					health_check.sh $"{IP}"
+					sh """
+                    	bash ./tests/health_check.sh ${env.IP}
+                	"""
 				}
 			}
 		}
