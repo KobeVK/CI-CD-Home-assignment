@@ -1,8 +1,5 @@
 from django.shortcuts import render
 import os
-# from django.shortcuts import HttpResponse
-
-
 
 def get_name(request):
     name = request.GET.get('name', 'world')

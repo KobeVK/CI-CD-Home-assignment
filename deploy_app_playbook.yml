@@ -99,7 +99,7 @@
           command: pip install django
         
         - name: Export vars
-          shell: echo "export buildNumber="{{ buildNumber }}" && export envioronment="{{ envioronment }}"
+          shell: echo "export buildNumber="{{ buildNumber }}" && export envioronment="{{ envioronment }}""
       
         - name: Go to the folder and execute command
           command: docker-compose -f Versatile/docker-compose.yml up -d

@@ -51,6 +51,12 @@ the pipeline will kill the EC2 machine that was created after 10 minuets
 as for production, the 
 
 # Deployment
+To deploy development enviornemt:
+1. login to jenkins in http://13.38.117.100:8080/job/versatile-app-build-test-deploy/
+2. go to versatile-app-build-test-deploy job
+3. press on your development branch
+4. build 
+
 
 
 

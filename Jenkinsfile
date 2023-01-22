@@ -6,7 +6,8 @@ def buildNumber = env.BUILD_NUMBER as int
 pipeline {
 	agent any
 	parameters {
-		string(name: 'IP', defaultValue: '')
+		string(name: 'region', defaultValue: 'eu-west-3')
+		
 	}
 
 	environment {
@@ -89,7 +90,7 @@ pipeline {
 					script{
 						sh """
 							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml > /dev/null 1>&2
-							ansible-playbook deploy_app_playbook.yml --extra-vars "buildNumber="${buildNumber}" envioronment="${env.ENVIRONMENT}"" 
+							ansible-playbook deploy_app_playbook.yml --extra-vars "buildNumber="${buildNumber}" envioronment="${env.ENVIRONMENT}""
 							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
 						"""
 					}
