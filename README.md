@@ -45,11 +45,12 @@ such as: <br>
 In this stage, we release the image as artifact to dockerhub. <br>
 This image containes the latest of our code
 6. `Destroy`<br>
-On development pipelines only (pipelines that came from any other branch but `main`)
-it will kill the EC2 machine that was created during the pipeline
+On development branches only (pipelines that came from any other branch but `main`)
+the pipeline will kill the EC2 machine that was created after 10 minuets
+
+as for production, the 
 
 # Deployment
-## Development deployment: <br>
 
 
 
@@ -58,6 +59,7 @@ it will kill the EC2 machine that was created during the pipeline
 # How to use
 
 # Artifacts
+Automatic versioning in the pipeline
 
 # Future work
 1. enable terraform variables to choose from a drop down list, just to not always use the free tier

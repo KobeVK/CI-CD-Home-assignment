@@ -45,7 +45,6 @@
             name: python3.9
             state: present
 
-
         - name: Install containerd.io and the Docker Compose plugin
           apt:
             name: "{{ packages }}"
@@ -98,6 +97,10 @@
 
         - name: create django
           command: pip install django
+        
+        - name: Export vars
+          shell: echo "export buildNumber="{{ buildNumber }}" && export envioronment="{{ envioronment }}"
       
         - name: Go to the folder and execute command
           command: docker-compose -f Versatile/docker-compose.yml up -d
+

@@ -9,9 +9,9 @@ def get_name(request):
     return render(request, 'index.html', {'name': name})
 
 def build(request):
-    buildNumber = os.environ.get('buildNumber')
+    buildNumber = os.getenv('buildNumber')
     return render(request, 'index.html', {'jenkins_variable': buildNumber})
 
 def env(request):
-    environment = os.environ.get('environment')
+    environment = os.getenv('environment')
     return render(request, 'index.html', {'jenkins_variable': environment})

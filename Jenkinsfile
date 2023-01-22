@@ -89,7 +89,7 @@ pipeline {
 					script{
 						sh """
 							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml > /dev/null 1>&2
-							ansible-playbook deploy_app_playbook.yml
+							ansible-playbook deploy_app_playbook.yml --extra-vars "buildNumber="${buildNumber}" envioronment="${env.ENVIRONMENT}"" 
 							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
 						"""
 					}
@@ -112,7 +112,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					script{
 						sh """
-							sed -i 's/hosts: all/hosts: ${env.IP}/' release_docker_playbook.yml > /dev/null 1>&2	
+							sed -i 's/hosts: all/hosts: ${env.IP}/' release_docker_playbook.yml > /dev/null 1>&2
 						"""
 					}
 					ansiblePlaybook(
@@ -120,14 +120,8 @@ pipeline {
 						extraVars: [
 							usr: "${USERNAME}",
 							pass: "${PASSWORD}",
-							buildNumber: "${buildNumber}"
-							// script{
-							// 	sh """
-							// 		docker login  -u ${USERNAME} -p ${PASSWORD}
-							// 		docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-							// 		docker tag versatile_app sapkobisap/versatile:${buildNumber}
-							// 		docker push sapkobisap/versatile:${buildNumber}
-							// 	"""
+							buildNumber: "${buildNumber}",
+							envioronment: "${env.ENVIRONMENT}"
 						]
 					)
 				}
