@@ -1,5 +1,7 @@
 #!groovy
 
+def ENVIRONMENT = ""
+def buildNumber = env.BUILD_NUMBER as int
 
 pipeline {
 	agent any
@@ -9,13 +11,11 @@ pipeline {
 
 	environment {
       branch = "${env.GIT_BRANCH}"
-      evni = "${env.ENVIRONMENT}"
 	  GIT_SSH_COMMAND = "ssh -o StrictHostKeyChecking=no"
 	}
 
 	options {
 		timestamps()
-		// lock(evni)
 	}
 
 	stages {
@@ -28,7 +28,6 @@ pipeline {
                     checkout scm
 					// abort a running Pipeline build if a new one is started
                     // https://support.cloudbees.com/hc/en-us/articles/360034881371-How-can-I-abort-a-running-Pipeline-build-if-a-new-one-is-started-
-                    def buildNumber = env.BUILD_NUMBER as int
                     if (buildNumber > 1) milestone(buildNumber - 1)
                     milestone(buildNumber)
                 }
@@ -50,24 +49,18 @@ pipeline {
                 withAWS(credentials: 'aws-access-key') {
 					script {
 						if (branch == 'main') {
-							// terraform workspace select prod
 							env.ENVIRONMENT = 'production'
+							env.prevent_destroy = "true"
+							deployENV()
 						} else {
-							// terraform workspace select dev
-							env.ENVIRONMENT = 'staging'	
+							env.ENVIRONMENT = 'staging'
+							deployENV()	
 						}
-						sh """
-							echo "Starting Terraform init"
-							terraform init
-							terraform plan -out myplan
-							terraform apply -auto-approve
-						"""
 					}
 				}
 			}
 		}
 
-		
 		stage('Verify') {	
 			steps {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
@@ -80,8 +73,8 @@ pipeline {
 						env.IP = access_ip
 						println "the machine terraform created is  = " + access_ip
 						sh """
-							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
-							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts"
+							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts > /dev/null 1>&2"
+							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts > /dev/null 1>&2 "
 							sleep 60 
 							ansible ${access_ip} -m ping --private-key=$KEY
 						"""
@@ -95,7 +88,7 @@ pipeline {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
 					script{
 						sh """
-							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml
+							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml > /dev/null 1>&2
 							ansible-playbook deploy_app_playbook.yml
 							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
 						"""
@@ -118,12 +111,11 @@ pipeline {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					script{
-						def buildNumber = env.BUILD_NUMBER
 						sh """
 							docker login  -u ${USERNAME} -p ${PASSWORD}
-							sudo docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-							sudo docker tag versatile_app sapkobisap/versatile:${buildNumber}
-							sudo docker push sapkobisap/versatile:${buildNumber}
+							docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+							docker tag versatile_app sapkobisap/versatile:${buildNumber}
+							docker push sapkobisap/versatile:${buildNumber}
 						"""
 					}
 				}
@@ -131,12 +123,34 @@ pipeline {
 		}
 
 		stage('destroy image') {
+            when {
+                expression {
+                    branch != "main"
+                }
+            }
 			steps {
-				sh """
-					echo "destroying inventory"
-				"""
+				script{
+					destroyENV()
+				}
 			}
 		}
-
 	}
+}
+
+def deployENV() {
+	def buildNumber = env.BUILD_NUMBER
+	sh """
+		echo "Starting Terraform init"
+		terraform init
+		terraform plan -out myplan -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform apply -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"
+	"""
+}
+
+def destroyENV() {
+	def buildNumber = env.BUILD_NUMBER
+	sh """
+		echo "Starting Terraform destroy"
+		terraform destory -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+	"""
 }

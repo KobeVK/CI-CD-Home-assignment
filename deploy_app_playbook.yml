@@ -64,20 +64,30 @@
 
         - name: Creates directory
           file:
-            path: /home/ubuntu/Versatile
-            state: directory  
+            path: /home/ubuntu/Versatile/app
+            state: directory
 
         - name: Copy necessary files
           copy:
             src: "{{ item }}"
-            dest: /home/ubuntu/Versatile
+            dest: /home/ubuntu/Versatile/app
+            mode: 0644
+          with_items:
+            - app/app
+            - app/hello_world
+            - app/db.sqlite3
+            - app/manage.py
+        
+        - name: Copy necessary files2
+          copy:
+            src: "{{ item }}"
+            dest: /home/ubuntu/Versatile/
             mode: 0644
           with_items:
             - Dockerfile
             - docker-compose.yml
             - requirements.txt
             - entrypoint.sh
-            - app/
 
         - name: create install python3-pip
           command: apt install -y python3-pip
@@ -88,7 +98,6 @@
 
         - name: create django
           command: pip install django
-
-        - name: docker-compose up
-          command: chdir=/home/ubuntu/Versatile/ docker-compose up
-
+      
+        - name: Go to the folder and execute command
+          command: docker-compose -f Versatile/docker-compose.yml up -d
