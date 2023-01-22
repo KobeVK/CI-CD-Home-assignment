@@ -65,7 +65,8 @@
         - name: Creates directory
           file:
             path: /home/ubuntu/Versatile
-            state: directory  
+            state: directory
+            chdir: "{{ path }}"
 
         - name: Copy necessary files
           copy:
@@ -88,10 +89,7 @@
 
         - name: create django
           command: pip install django
-        
-        - name: Changing directory
-          chdir: /home/ubuntu/Versatile
-
+      
         - name: docker-compose up
           command: docker-compose up
 

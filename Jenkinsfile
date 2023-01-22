@@ -60,6 +60,7 @@ pipeline {
 							echo "Starting Terraform init"
 							terraform init
 							terraform plan -out myplan
+							terraform state lock
 							terraform apply -auto-approve
 						"""
 					}
@@ -132,11 +133,15 @@ pipeline {
 
 		stage('destroy image') {
 			steps {
+				when {
+					expression {
+						env.ENVIRONMENT = 'staging'
+					}
 				sh """
-					echo "destroying inventory"
+					terraform apply -destroy
+					terraform state unlock
 				"""
 			}
 		}
-
 	}
 }
