@@ -23,6 +23,11 @@ pipeline {
                     deleteDir()
 					cleanWs()
                     checkout scm
+					// abort a running Pipeline build if a new one is started
+                    // https://support.cloudbees.com/hc/en-us/articles/360034881371-How-can-I-abort-a-running-Pipeline-build-if-a-new-one-is-started-
+                    def buildNumber = env.BUILD_NUMBER as int
+                    if (buildNumber > 1) milestone(buildNumber - 1)
+                    milestone(buildNumber)
                 }
             }
         }
@@ -111,11 +116,12 @@ pipeline {
 		stage('Release') {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+					def buildNumber = env.BUILD_NUMBER
 					sh """
 						docker login  -u ${USERNAME} -p ${PASSWORD}
-						docker commit -m "building web-app" versatile versatile_web_app:v1
-						docker tag versatile_app sapkobisap/versatile:v1
-						docker push sapkobisap/versatile:v1
+						docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+						docker tag versatile_app sapkobisap/versatile:${buildNumber}
+						docker push sapkobisap/versatile:${buildNumber}
 					"""
 
 				}
