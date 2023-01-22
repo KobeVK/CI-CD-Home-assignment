@@ -102,16 +102,23 @@ pipeline {
 			}
 		}
 
-
-		stage('build and tag') {
+		stage('test') {
 			steps {
-				echo "hi"
-				//
-				// sh """
-				//	 foo=$(git show -s --pretty=%an)
-				//	docker commit -m "building web-app" versatile versatile_web_app:v1
-				//"""
-				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
+				health_check.sh ${IP}
+			}
+		}
+
+		stage('Release') {
+			steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+					sh """
+						docker login  -u ${USERNAME} -p ${PASSWORD}
+						docker commit -m "building web-app" versatile versatile_web_app:v1
+						docker tag versatile_app sapkobisap/versatile:v1
+						docker push sapkobisap/versatile:v1
+					"""
+
+				}
 			}
 		}
 
@@ -120,7 +127,6 @@ pipeline {
 				sh """
 					echo "destroying inventory"
 				"""
-				// sh "terraform apply -var 'environment=${evni}' -var 'tag_name=${env.GIT_BRANCH}'"
 			}
 		}
 
