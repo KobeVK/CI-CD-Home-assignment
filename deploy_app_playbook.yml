@@ -64,13 +64,13 @@
 
         - name: Creates directory
           file:
-            path: /home/ubuntu/Versatile
+            path: /home/ubuntu/app
             state: directory
 
         - name: Copy necessary files
           copy:
             src: "{{ item }}"
-            dest: /home/ubuntu/Versatile
+            dest: /home/ubuntu/app/
             mode: 0644
           with_items:
             - Dockerfile
@@ -94,4 +94,4 @@
         #   args:
         #     chdir: /home/ubuntu/Versatile
         - name: Go to the folder and execute command
-          command: chdir=/home/ubuntu/Versatile docker-compose up
+          command: docker-compose  -f app/docker-compose.yml up
