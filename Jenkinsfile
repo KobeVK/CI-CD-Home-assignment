@@ -110,6 +110,11 @@ pipeline {
 		stage('Release') {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+					script{
+						sh """
+							sed -i 's/hosts: all/hosts: ${env.IP}/' release_docker_playbook.yml > /dev/null 1>&2	
+						"""
+					}
 					ansiblePlaybook(
 						playbook: 'release_docker_playbook.yml',
 						extraVars: [

@@ -13,8 +13,7 @@
             password: "{{ pass }}"
 
         - name: docker commit
-          become: true
-          command: docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+          command: docker commit -m "building web-app" versatile versatile_web_app:"{{ buildNumber }}"
 
         - name: docker tag
           become: true
