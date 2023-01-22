@@ -141,6 +141,7 @@ pipeline {
 					terraform apply -destroy
 					terraform state unlock
 				"""
+				}
 			}
 		}
 	}
