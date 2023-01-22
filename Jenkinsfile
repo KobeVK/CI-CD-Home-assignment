@@ -109,21 +109,24 @@ pipeline {
 
 		stage('test') {
 			steps {
-				health_check.sh ${IP}
+				script{
+					health_check.sh $"{IP}"
+				}
 			}
 		}
 
 		stage('Release') {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
-					def buildNumber = env.BUILD_NUMBER
-					sh """
-						docker login  -u ${USERNAME} -p ${PASSWORD}
-						docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-						docker tag versatile_app sapkobisap/versatile:${buildNumber}
-						docker push sapkobisap/versatile:${buildNumber}
-					"""
-
+					script{
+						def buildNumber = env.BUILD_NUMBER
+						sh """
+							docker login  -u ${USERNAME} -p ${PASSWORD}
+							docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+							docker tag versatile_app sapkobisap/versatile:${buildNumber}
+							docker push sapkobisap/versatile:${buildNumber}
+						"""
+					}
 				}
 			}
 		}
