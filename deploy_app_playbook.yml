@@ -73,8 +73,8 @@
             dest: /home/ubuntu/Versatile/app
             mode: 0644
           with_items:
-            - app/app/
-            - app/hello_world
+            - app/app
+            - app/hello_world/
             - app/db.sqlite3
             - app/manage.py
         
@@ -99,9 +99,5 @@
         - name: create django
           command: pip install django
       
-        # - name: docker-compose up
-        #   command: docker-compose up
-        #   args:
-        #     chdir: /home/ubuntu/Versatile
         - name: Go to the folder and execute command
-          command: docker-compose  -f app/docker-compose.yml up
+          command: docker-compose -f Versatile/docker-compose.yml up

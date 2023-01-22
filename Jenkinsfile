@@ -80,8 +80,8 @@ pipeline {
 						env.IP = access_ip
 						println "the machine terraform created is  = " + access_ip
 						sh """
-							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts"
-							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts"
+							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts > /dev/null 1>&2"
+							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts > /dev/null 1>&2 "
 							sleep 60 
 							ansible ${access_ip} -m ping --private-key=$KEY
 						"""
@@ -95,7 +95,7 @@ pipeline {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
 					script{
 						sh """
-							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml
+							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml > /dev/null 1>&2
 							ansible-playbook deploy_app_playbook.yml
 							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
 						"""
