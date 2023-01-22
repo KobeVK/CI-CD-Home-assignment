@@ -14,7 +14,7 @@ resource "aws_instance" "web_app" {
 }
 
 lifecycle {
-  prevent_destroy = '${var.prevent_destroy}'
+  prevent_destroy = "${var.prevent_destroy}"
 }
 
 output "web_app_access_ip" {  
