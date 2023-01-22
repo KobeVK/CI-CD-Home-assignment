@@ -123,6 +123,11 @@ pipeline {
 		}
 
 		stage('destroy image') {
+            when {
+                expression {
+                    branch != "main"
+                }
+            }
 			steps {
 				script{
 					destroyENV()

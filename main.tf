@@ -12,9 +12,9 @@ resource "aws_instance" "web_app" {
   key_name      = "mac_23"
   vpc_security_group_ids =  ["sg-0fdca7d4d5179465b"]
 
-  lifecycle {
-    prevent_destroy = "${var.prevent_destroy}"
-  }
+  # lifecycle {
+  #  prevent_destroy = true
+  # }
 }
 
 
