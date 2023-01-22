@@ -100,4 +100,4 @@
           command: pip install django
       
         - name: Go to the folder and execute command
-          command: docker-compose -f Versatile/docker-compose.yml up
+          command: docker-compose -f Versatile/docker-compose.yml up -d

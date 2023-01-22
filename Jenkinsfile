@@ -1,5 +1,7 @@
 #!groovy
 
+def ENVIRONMENT = ""
+def buildNumber = env.BUILD_NUMBER
 
 pipeline {
 	agent any
@@ -9,8 +11,8 @@ pipeline {
 
 	environment {
       branch = "${env.GIT_BRANCH}"
-      evni = "${env.ENVIRONMENT}"
 	  GIT_SSH_COMMAND = "ssh -o StrictHostKeyChecking=no"
+	  ENVIRONMENT = ""
 	}
 
 	options {
@@ -50,24 +52,18 @@ pipeline {
                 withAWS(credentials: 'aws-access-key') {
 					script {
 						if (branch == 'main') {
-							// terraform workspace select prod
 							env.ENVIRONMENT = 'production'
+							env.prevent_destroy = "true"
+							deployENV()
 						} else {
-							// terraform workspace select dev
-							env.ENVIRONMENT = 'staging'	
-						}//maybe add here terraform lock
-						sh """
-							echo "Starting Terraform init"
-							terraform init
-							terraform plan -out myplan
-							terraform apply -auto-approve
-						"""
+							env.ENVIRONMENT = 'staging'
+							deployENV()	
+						}
 					}
 				}
 			}
 		}
 
-		
 		stage('Verify') {	
 			steps {
 				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
@@ -118,7 +114,6 @@ pipeline {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					script{
-						def buildNumber = env.BUILD_NUMBER
 						sh """
 							docker login  -u ${USERNAME} -p ${PASSWORD}
 							docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
@@ -132,15 +127,30 @@ pipeline {
 
 		stage('destroy image') {
 			steps {
-				when {
-					expression {
-						env.ENVIRONMENT = 'staging'
-					}//maybe add here terraform unlock
-				sh """
-					terraform apply -destroy
-				"""
+				script{
+					destroyENV()
 				}
 			}
 		}
 	}
+}
+
+def deployENV() {
+    {
+        sh """
+			echo "Starting Terraform init"
+			terraform init
+			terraform plan -out myplan -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
+			terraform apply -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
+        """
+    }
+}
+
+def destroyENV() {
+    {
+        sh """
+			echo "Starting Terraform destroy"
+			terraform destory -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
+        """
+    }
 }

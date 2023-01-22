@@ -13,6 +13,11 @@ resource "aws_instance" "web_app" {
   vpc_security_group_ids =  ["sg-0fdca7d4d5179465b"]
 }
 
+lifecycle {
+  prevent_destroy = '${var.prevent_destroy}'
+}
+
 output "web_app_access_ip" {  
   value = aws_instance.web_app.public_ip
 }
+
