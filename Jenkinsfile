@@ -110,14 +110,21 @@ pipeline {
 		stage('Release') {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
-					script{
-						sh """
-							docker login  -u ${USERNAME} -p ${PASSWORD}
-							docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-							docker tag versatile_app sapkobisap/versatile:${buildNumber}
-							docker push sapkobisap/versatile:${buildNumber}
-						"""
-					}
+					ansiblePlaybook(
+						playbook: 'release_docker_playbook.yml'ת
+						extraVars: [
+							usr: "${USERNAME}",
+							pass: "${PASSWORD}"
+							buildNumber: "${buildNumber}"
+							// script{
+							// 	sh """
+							// 		docker login  -u ${USERNAME} -p ${PASSWORD}
+							// 		docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+							// 		docker tag versatile_app sapkobisap/versatile:${buildNumber}
+							// 		docker push sapkobisap/versatile:${buildNumber}
+							// 	"""
+						]
+					)
 				}
 			}
 		}
