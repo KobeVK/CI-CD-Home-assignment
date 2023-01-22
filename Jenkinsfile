@@ -121,9 +121,9 @@ pipeline {
 						def buildNumber = env.BUILD_NUMBER
 						sh """
 							docker login  -u ${USERNAME} -p ${PASSWORD}
-							sudo docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-							sudo docker tag versatile_app sapkobisap/versatile:${buildNumber}
-							sudo docker push sapkobisap/versatile:${buildNumber}
+							docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
+							docker tag versatile_app sapkobisap/versatile:${buildNumber}
+							docker push sapkobisap/versatile:${buildNumber}
 						"""
 					}
 				}

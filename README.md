@@ -13,6 +13,16 @@ DevOps Engineer Home Challenge for @Versatile
 DevOps Engineer Home Challenge for @Versatile
 As part of this Home assignment, I was required to create a web-app that returns Hello,<name> , deploy it automatically, test and create useful CI flow.
 
+important notes:
+1. Engineers cannot deploy to same enviorment <br>
+This was done by using GIT to manage my Terraform code. It allows me to track changes to your code and manage conflicts one build at a time.
+2. Links can be seen throughout the Jenkins jobs run <br>
+2.1 deployed web app<br>
+2.2 docker image<br>
+3. Emails on failed test<br>
+
+
+
 # Architecture
 ![Versatile web app CI diagram](docs/versatile_ci_flow.png)
 
