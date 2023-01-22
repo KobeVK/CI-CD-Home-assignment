@@ -26,6 +26,23 @@ This was done by using GIT to manage my Terraform code. It allows me to track ch
 # Architecture
 ![Versatile web app CI diagram](docs/versatile_ci_flow.png)
 
+<br>
+Versatile web app  CICD flow involves the following stages: <br>
+1. Deploy <br>
+In this stage, we deploy an EC2 instance to aws, using terraform aws module<br>
+<br>
+
+2. verify
+In this stage, we verify that the EC2 instance was created succesfully 
+
+3. Install <br>
+In this stage, we install our web application on top of the EC2 using ansible whcih runs docker-compose to initiate a docker container that holds our web app <br>
+
+4. Test <br>
+In this stage,
+5. 
+6. 
+
 # Deployment
 
 # The tests

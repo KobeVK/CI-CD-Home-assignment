@@ -91,7 +91,7 @@
         
         - name: Changing directory
           become: true
-          command: cd Versatile
+          command: cd /home/ubuntu/Versatile
 
         - name: docker-compose up
           command: docker-compose up
