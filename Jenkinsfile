@@ -12,7 +12,6 @@ pipeline {
 	environment {
       branch = "${env.GIT_BRANCH}"
 	  GIT_SSH_COMMAND = "ssh -o StrictHostKeyChecking=no"
-	  ENVIRONMENT = ""
 	}
 
 	options {
