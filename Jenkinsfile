@@ -111,7 +111,7 @@ pipeline {
 			steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					ansiblePlaybook(
-						playbook: 'release_docker_playbook.yml'ת
+						playbook: 'release_docker_playbook.yml'
 						extraVars: [
 							usr: "${USERNAME}",
 							pass: "${PASSWORD}"
