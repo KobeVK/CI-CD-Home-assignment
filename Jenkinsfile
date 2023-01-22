@@ -133,17 +133,19 @@ pipeline {
 }
 
 def deployENV() {
+	def buildNumber = env.BUILD_NUMBER
 	sh """
 		echo "Starting Terraform init"
 		terraform init
-		terraform plan -out myplan -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
-		terraform apply -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform plan -out myplan -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform apply -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"
 	"""
 }
 
 def destroyENV() {
-        sh """
-			echo "Starting Terraform destroy"
-			terraform destory -auto-approve -var="environment=${ENVIRONMENT}" -var="id=${buildNumber}"  
-        """
+	def buildNumber = env.BUILD_NUMBER
+	sh """
+		echo "Starting Terraform destroy"
+		terraform destory -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+	"""
 }
