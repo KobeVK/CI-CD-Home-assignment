@@ -52,26 +52,35 @@ as for production, the
 
 # Deployment
 To deploy development enviornemt:
-1. login to jenkins in http://13.38.117.100:8080/job/versatile-app-build-test-deploy/
-2. go to versatile-app-build-test-deploy job
-3. press on your development branch
-4. build 
+1. Login to jenkins in http://13.38.117.100:8080/job/versatile-app-build-test-deploy/
+2. Go to versatile-app-build-test-deploy job
+3. Press on your development branch
+4. Build with Parameters
+5. set Region and 'build'
 
+Deployment to production will happen only after a succesful merge to main branch
 
+## deploy locally (installing web-app only)
+    pre-requisites:
+        docker | docker-compose | python | virtualenv | pip | git
 
+    git clone clone https://github.com/KobeVK/Versatile
+    cd Versatile && docker-compose up
 
 # The tests
-
-# How to use
+1. health check
 
 # Artifacts
-Automatic versioning in the pipeline
+The product is the web-app containerized and pushed to docker hub.
+auto versioned by the Jenkins job number <br>
+ https://hub.docker.com/r/sapkobisap/versatile   
 
 # Future work
-1. enable terraform variables to choose from a drop down list, just to not always use the free tier
-2. make production web-app always on and re-deploy with flag
-3. fix folder structure to better visibility (ansible files, TF files, Docker files)
-4. add proxy such as NginX
+1. Enable more parameters in Gitlab to support wider range of deployemt possibilites (not just free-tier EC2's)
+2. Fix folder structure to better visibility (ansible files, TF files, Docker files)
+3. add proxy such as NginX
+4. Infrastructure tests (Load on server, high traffic, etc...)
+
 
 
 
