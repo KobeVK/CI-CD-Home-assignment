@@ -100,7 +100,7 @@
           command: pip install django
         
         - name: Export vars
-          command: python3 set_env_vars.py "{{ buildNumber }}" "{{ envioronment }}"
+          command: python3 app/set_env_vars.py "{{ buildNumber }}" "{{ envioronment }}"
       
         - name: Go to the folder and execute command
           command: docker-compose -f Versatile/docker-compose.yml up -d
