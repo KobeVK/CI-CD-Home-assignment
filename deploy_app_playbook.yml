@@ -76,6 +76,7 @@
             - app/hello_world
             - app/db.sqlite3
             - app/manage.py
+            - set_env_vars.py
         
         - name: Copy necessary files2
           copy:
@@ -99,7 +100,7 @@
           command: pip install django
         
         - name: Export vars
-          command: python3 set_env_vars.py "{{ buildnumber }}" "{{ envioronment }}"
+          command: python3 set_env_vars.py "{{ buildNumber }}" "{{ envioronment }}"
       
         - name: Go to the folder and execute command
           command: docker-compose -f Versatile/docker-compose.yml up -d
