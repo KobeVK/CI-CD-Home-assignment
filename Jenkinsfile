@@ -2,11 +2,13 @@
 
 def ENVIRONMENT = ""
 def buildNumber = env.BUILD_NUMBER as int
+def mailTo = 'skvaknin@gmail.com'
 
 pipeline {
 	agent any
 	parameters {
-		string(name: 'IP', defaultValue: '')
+		string(name: 'region', defaultValue: 'eu-west-3')
+		
 	}
 
 	environment {
@@ -73,8 +75,8 @@ pipeline {
 						env.IP = access_ip
 						println "the machine terraform created is  = " + access_ip
 						sh """
-							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts > /dev/null 1>&2"
-							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts > /dev/null 1>&2 "
+							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts > /dev/null"
+							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts > /dev/null "
 							sleep 60 
 							ansible ${access_ip} -m ping --private-key=$KEY
 						"""
@@ -105,6 +107,13 @@ pipeline {
                 	"""
 				}
 			}
+			post{
+			    failure {
+				    script{
+					    sendEmail(mailTo)
+				    }
+			    }
+		    }	
 		}
 
 		stage('Release') {
@@ -112,7 +121,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
 					script{
 						sh """
-							sed -i 's/hosts: all/hosts: ${env.IP}/' release_docker_playbook.yml > /dev/null 1>&2	
+							sed -i 's/hosts: all/hosts: ${env.IP}/' release_docker_playbook.yml > /dev/null 1>&2
 						"""
 					}
 					ansiblePlaybook(
@@ -120,14 +129,8 @@ pipeline {
 						extraVars: [
 							usr: "${USERNAME}",
 							pass: "${PASSWORD}",
-							buildNumber: "${buildNumber}"
-							// script{
-							// 	sh """
-							// 		docker login  -u ${USERNAME} -p ${PASSWORD}
-							// 		docker commit -m "building web-app" versatile versatile_web_app:${buildNumber}
-							// 		docker tag versatile_app sapkobisap/versatile:${buildNumber}
-							// 		docker push sapkobisap/versatile:${buildNumber}
-							// 	"""
+							buildNumber: "${buildNumber}",
+							envioronment: "${env.ENVIRONMENT}"
 						]
 					)
 				}
@@ -141,8 +144,10 @@ pipeline {
                 }
             }
 			steps {
-				script{
-					destroyENV()
+				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
+					script{
+						destroyENV()
+					}
 				}
 			}
 		}
@@ -164,6 +169,14 @@ def destroyENV() {
 	sh """
 		sleep 600
 		echo "Starting Terraform destroy"
-		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"
 	"""
+}
+
+def sendEmail(mailTo) {
+    println "send mail to recipients - " + mailTo
+    def strSubject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+    def strBody = """<p>FAILED: Job <b>'${env.JOB_NAME} [${env.BUILD_NUMBER}]'</b>:</p>
+        <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
+    emailext body: strBody, subject: strSubject, to: mailTo, mimeType: "text/html"
 }

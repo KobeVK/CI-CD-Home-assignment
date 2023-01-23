@@ -45,26 +45,39 @@ such as: <br>
 In this stage, we release the image as artifact to dockerhub. <br>
 This image containes the latest of our code
 6. `Destroy`<br>
-On development pipelines only (pipelines that came from any other branch but `main`)
-it will kill the EC2 machine that was created during the pipeline
+On development branches only (pipelines that came from any other branch but `main`)
+the pipeline will kill the EC2 machine that was created after 10 minuets
+
+as for production, the 
 
 # Deployment
-## Development deployment: <br>
+To deploy development enviornemt:
+1. Login to jenkins in http://13.38.117.100:8080/job/versatile-app-build-test-deploy/
+2. Go to versatile-app-build-test-deploy job
+3. Press on your development branch
+4. Build with Parameters
+5. set Region and 'build'
 
+Deployment to production will happen only after a succesful merge to main branch
 
+## Deploy locally (installing web-app only)
+    pre-requisites:
+        docker | docker-compose | python | virtualenv | pip | git
+
+    git clone clone https://github.com/KobeVK/Versatile
+    cd Versatile && docker-compose up
 
 # The tests
-
-# How to use
+1. health check
 
 # Artifacts
+The product is the web-app containerized and pushed to docker hub.
+auto versioned by the Jenkins job number <br>
+ https://hub.docker.com/r/sapkobisap/versatile   
 
 # Future work
-1. enable terraform variables to choose from a drop down list, just to not always use the free tier
-2. make production web-app always on and re-deploy with flag
-3. fix folder structure to better visibility (ansible files, TF files, Docker files)
-4. add proxy such as NginX
-
-
-
-
+1. Enable more parameters in Gitlab to support wider range of deployemt possibilites (not just free-tier EC2's)
+2. Fix folder structure to better visibility (ansible files, TF files, Docker files)
+3. add proxy such as NginX
+4. Infrastructure tests (Load on server, high traffic, etc...)
+5. add Python unit tests, (maybe mock's with pupeteer...)

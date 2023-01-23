@@ -45,7 +45,6 @@
             name: python3.9
             state: present
 
-
         - name: Install containerd.io and the Docker Compose plugin
           apt:
             name: "{{ packages }}"
@@ -101,3 +100,4 @@
       
         - name: Go to the folder and execute command
           command: docker-compose -f Versatile/docker-compose.yml up -d
+
