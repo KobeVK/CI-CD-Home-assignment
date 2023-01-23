@@ -7,8 +7,3 @@ RUN apk del .tmp
 
 COPY ./app /home/ubuntu/Versatile/
 WORKDIR /home/ubuntu/Versatile/
-
-# RUN adduser -D user
-# RUN chown -R user:user /app
-# RUN chmod -R 755 /app
-# USER user

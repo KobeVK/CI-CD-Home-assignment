@@ -60,7 +60,7 @@ To deploy development enviornemt:
 
 Deployment to production will happen only after a succesful merge to main branch
 
-## deploy locally (installing web-app only)
+## Deploy locally (installing web-app only)
     pre-requisites:
         docker | docker-compose | python | virtualenv | pip | git
 
@@ -80,8 +80,4 @@ auto versioned by the Jenkins job number <br>
 2. Fix folder structure to better visibility (ansible files, TF files, Docker files)
 3. add proxy such as NginX
 4. Infrastructure tests (Load on server, high traffic, etc...)
-
-
-
-
-
+5. add Python unit tests, (maybe mock's with pupeteer...)

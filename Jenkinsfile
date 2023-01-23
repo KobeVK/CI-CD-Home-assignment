@@ -90,7 +90,7 @@ pipeline {
 					script{
 						sh """
 							sed -i 's/hosts: all/hosts: ${env.IP}/' deploy_app_playbook.yml > /dev/null 1>&2
-							ansible-playbook deploy_app_playbook.yml --extra-vars "buildNumber="${buildNumber}" envioronment="${env.ENVIRONMENT}""
+							ansible-playbook deploy_app_playbook.yml
 							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
 						"""
 					}
@@ -136,8 +136,10 @@ pipeline {
                 }
             }
 			steps {
-				script{
-					destroyENV()
+				withCredentials([sshUserPrivateKey(credentialsId: "aws", keyFileVariable: 'KEY')]) {
+					script{
+						destroyENV()
+					}
 				}
 			}
 		}
@@ -159,6 +161,6 @@ def destroyENV() {
 	sh """
 		sleep 600
 		echo "Starting Terraform destroy"
-		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"  
+		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"
 	"""
 }

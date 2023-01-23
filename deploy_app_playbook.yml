@@ -76,16 +76,8 @@
             - app/hello_world
             - app/db.sqlite3
             - app/manage.py
-
-        - name: Copy necessary files2
-          copy:
-            src: "{{ item }}"
-            dest: /home/ubuntu/Versatile/
-            mode: 0644
-          with_items:
-            - set_env_vars.py
         
-        - name: Copy necessary files3
+        - name: Copy necessary files2
           copy:
             src: "{{ item }}"
             dest: /home/ubuntu/Versatile/
@@ -105,9 +97,6 @@
 
         - name: create django
           command: pip install django
-        
-        - name: Export vars
-          command: python3 Versatile/set_env_vars.py "{{ buildNumber }}" "{{ envioronment }}"
       
         - name: Go to the folder and execute command
           command: docker-compose -f Versatile/docker-compose.yml up -d
