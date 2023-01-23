@@ -74,8 +74,8 @@ pipeline {
 						env.IP = access_ip
 						println "the machine terraform created is  = " + access_ip
 						sh """
-							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts > /dev/null 1>&2"
-							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts > /dev/null 1>&2 "
+							sudo -- sh -c "sed 's/.*ssh-rsa/${access_ip} ssh-rsa/' /home/ubuntu/.ssh/known_hosts > /dev/null"
+							sudo -- sh -c "echo ${access_ip} | sudo tee -a /home/ubuntu/Versatile/hosts > /dev/null "
 							sleep 60 
 							ansible ${access_ip} -m ping --private-key=$KEY
 						"""
