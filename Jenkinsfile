@@ -2,6 +2,7 @@
 
 def ENVIRONMENT = ""
 def buildNumber = env.BUILD_NUMBER as int
+def mailTo = 'skvaknin@gmail.com'
 
 pipeline {
 	agent any
@@ -106,6 +107,13 @@ pipeline {
                 	"""
 				}
 			}
+			post{
+			    failure {
+				    script{
+					    sendEmail(mailTo)
+				    }
+			    }
+		    }	
 		}
 
 		stage('Release') {
@@ -163,4 +171,12 @@ def destroyENV() {
 		echo "Starting Terraform destroy"
 		terraform destroy -auto-approve -var="environment=${env.ENVIRONMENT}" -var="id=${buildNumber}"
 	"""
+}
+
+def sendEmail(mailTo) {
+    println "send mail to recipients - " + mailTo
+    def strSubject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+    def strBody = """<p>FAILED: Job <b>'${env.JOB_NAME} [${env.BUILD_NUMBER}]'</b>:</p>
+        <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
+    emailext body: strBody, subject: strSubject, to: mailTo, mimeType: "text/html"
 }
